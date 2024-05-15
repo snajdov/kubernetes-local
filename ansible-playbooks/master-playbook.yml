@@ -169,13 +169,13 @@
       group: vagrant
       state: file
 
-  - name: Download calico manifests
+  - name: Download Calico v{{ calico_version }} manifests
     become: false
     get_url:
       url: https://raw.githubusercontent.com/projectcalico/calico/v{{ calico_version }}/manifests/calico.yaml
       dest: /home/vagrant/calico.yaml
 
-  - name: Install calico manifests
+  - name: Install Calico manifests
     become: false
     command: kubectl apply -f calico.yaml
 
