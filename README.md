@@ -47,6 +47,9 @@ To build the whole cluster:
 1. `cd` into the repository
 2. Run: `vagrant up` (this will also execute the Ansible playbooks)
 3. Wait for the whole process to finish
+4. Run: `vagrant ssh k8s-master` to ssh into the master node
+5. Run: `kubectl get nodes` to see if all the nodes were registered and `Ready` (it may take up to a minute)
+6. Run: `kubectl get pods --all-namespaces` and check if all pods are running
 
 
 ## Context

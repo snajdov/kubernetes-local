@@ -64,7 +64,6 @@
     file:
       path: /etc/containerd
       state: directory
-      mode: "0755"
 
   - name: Generate the default containerd config
     shell: "containerd config default > /etc/containerd/config.toml"
@@ -143,16 +142,12 @@
 
 
   - name: Check if port 6443 is open
-    wait_for:
-      host: your_remote_host
-      port: 6443
-      state: stopped
-    ignore_errors: yes
-    register: kubeadm
+    shell: ss -atnp | grep "LISTEN.*:6443" | wc -l
+    register: port_6443_open
 
   - name: Initialize the Kubernetes cluster using kubeadm
     command: kubeadm init --apiserver-advertise-address="192.168.50.10" --apiserver-cert-extra-sans="192.168.50.10"  --node-name k8s-master --pod-network-cidr={{ pod_network_cidr }}
-    when: kubeadm is failed
+    when: port_6443_open.stdout == "0"
 
   - name: Create .kube folder
     file:

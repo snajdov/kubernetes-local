@@ -132,17 +132,16 @@
       state: present
 
   - name: Copy the join command to server location
-    copy: src=../kubernetes-setup/join-command dest=/tmp/join-command.sh mode=0777
+    copy:
+      src: ../kubernetes-setup/join-command
+      dest: /tmp/join-command.sh
+      mode: 0777
     become: false
 
   - name: Check if port 10250 is open
-    wait_for:
-      host: your_remote_host
-      port: 10250
-      state: stopped
-    ignore_errors: yes
-    register: already_joined
+    shell: ss -atnp | grep "LISTEN.*:10250" | wc -l
+    register: port_10250_open
 
   - name: Join the node to cluster
     command: sh /tmp/join-command.sh
-    when: already_joined is failed
+    when: port_10250_open.stdout == "0"
