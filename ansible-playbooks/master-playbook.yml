@@ -177,7 +177,7 @@
   - name: Download calico manifests
     become: false
     get_url:
-      url: https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml
+      url: https://raw.githubusercontent.com/projectcalico/calico/v{{ calico_version }}/manifests/calico.yaml
       dest: /home/vagrant/calico.yaml
 
   - name: Install calico manifests

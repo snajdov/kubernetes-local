@@ -9,18 +9,24 @@ A local kubernetes cluster with a single master and multiple worker nodes, provi
 
 
 ## Setup
+
+![](setup.png)
+
 - x1 Master Node
   - hostname: `k8s-master`
-  - memory: 2GiB
-  - cpus: 2
+  - memory: `2GiB`
+  - cpus: `2`
   - ip: `192.168.50.10`
 
-- x2 Worker Nodes (can be changed by modifing NUM_WORKERS in the `Vagrantfile`)
+- x2 Worker Nodes (can be changed by modifing `NUM_WORKERS` in the `Vagrantfile`)
   - hostnames: `node-1, node-2`
-  - memory: 2GiB
-  - cpus: 2
+  - memory: `2GiB`
+  - cpus: `2`
   - ips: `192.168.50.11, 192.168.50.12`
 
+- Network: '192.168.50.0/24'
+
+- Pod Cluster Network: '10.88.0.0/16'
 
 ## Versions
 
@@ -28,6 +34,7 @@ A local kubernetes cluster with a single master and multiple worker nodes, provi
 - Containerd v1.7.16 (Latest version: https://github.com/containerd/containerd/releases)
 - Runc v1.1.12 (Latest version: https://github.com/opencontainers/runc/releases)
 - CNI Plugins 1.4.1 (Latest version: https://github.com/containernetworking/plugins/releases)
+- Calico v3.28.0 (Latest version: https://github.com/projectcalico/calico/releases)
 - Ubuntu 23.10 - ubuntu/mantic64 (Latest version: https://app.vagrantup.com/ubuntu)
 
 All versions are parameterized. You can edit them in the `Vagrantfile`.
