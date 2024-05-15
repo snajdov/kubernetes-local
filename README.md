@@ -30,12 +30,12 @@ A local kubernetes cluster with a single master and multiple worker nodes, provi
 
 ## Versions
 
-- Kubernetes v1.30 (Latest version: https://kubernetes.io/releases/)
-- Containerd v1.7.16 (Latest version: https://github.com/containerd/containerd/releases)
-- Runc v1.1.12 (Latest version: https://github.com/opencontainers/runc/releases)
-- CNI Plugins 1.4.1 (Latest version: https://github.com/containernetworking/plugins/releases)
-- Calico v3.28.0 (Latest version: https://github.com/projectcalico/calico/releases)
-- Ubuntu 23.10 - ubuntu/mantic64 (Latest version: https://app.vagrantup.com/ubuntu)
+- Kubernetes `v1.30` (Latest version: https://kubernetes.io/releases/)
+- Containerd `v1.7.16` (Latest version: https://github.com/containerd/containerd/releases)
+- Runc `v1.1.12` (Latest version: https://github.com/opencontainers/runc/releases)
+- CNI Plugins `v1.4.1` (Latest version: https://github.com/containernetworking/plugins/releases)
+- Calico `v3.28.0` (Latest version: https://github.com/projectcalico/calico/releases)
+- Ubuntu `23.10` - `ubuntu/mantic64` (Latest version: https://app.vagrantup.com/ubuntu)
 
 All versions are parameterized. You can edit them in the `Vagrantfile`.
 
