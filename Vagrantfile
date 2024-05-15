@@ -6,7 +6,7 @@ CONTAINERD_VERSION = "1.7.16" # https://github.com/containerd/containerd/release
 RUNC_VERSION = "1.1.12" # https://github.com/opencontainers/runc/releases
 CNI_PLUGINS_VERSION = "1.4.1" # https://github.com/containernetworking/plugins/releases
 KUBERNETES_VERSION = "1.30" # https://github.com/kubernetes/kubernetes/releases
-CALICO_VERSION = "3.28.0"
+CALICO_VERSION = "3.28.0" # https://github.com/projectcalico/calico/releases
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false

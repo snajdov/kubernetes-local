@@ -30,7 +30,7 @@ A local kubernetes cluster with a single master and multiple worker nodes, provi
 
 ## Versions
 
-- Kubernetes `v1.30` (Latest version: https://kubernetes.io/releases/)
+- Kubernetes `v1.30` (Latest version: https://kubernetes.io/releases)
 - Containerd `v1.7.16` (Latest version: https://github.com/containerd/containerd/releases)
 - Runc `v1.1.12` (Latest version: https://github.com/opencontainers/runc/releases)
 - CNI Plugins `v1.4.1` (Latest version: https://github.com/containernetworking/plugins/releases)
@@ -85,7 +85,7 @@ kubectl run --image=nginx --port=80 nginx02
 # Check that the pods are running and note on which node they are deployed
 kubectl get pods -o wide
 
-# Tag the with some common labels (e.g. name=myapp)
+# Tag them with some common labels (e.g. name=myapp)
 kubectl label pod/nginx01 name=myapp
 kubectl label pod/nginx02 name=myapp
 
@@ -96,8 +96,8 @@ kubectl create service nodeport myapp --tcp=35321:80
 kubectl set selector svc/myapp name=myapp
 
 # See the node port it listens on
-kubectl describe svc/myapp
 # At the line "NodePort:" see the second value with format <PORT>/TCP
+kubectl describe svc/myapp
 ```
 
 At this point, we have a Node Port Service listening on `<PORT>`.
@@ -108,13 +108,13 @@ For example, in your browser type: `192.168.50.11:<PORT>`
 But to see that the Service actually loadbalances between the two pods, we can edit the nginx `index.html` file.
 
 ```bash
-# Enter into the pod/nginx01's shell
+# Enter into pod/nginx01's shell
 kubectl exec -it nginx01 -- bash
 
 # Change nginx to nginx01
 sed -i 's/nginx\!/nginx01\!/' /usr/share/nginx/html/index.html
 
-# Enter into the pod/nginx02's shell
+# Enter into pod/nginx02's shell
 kubectl exec -it nginx02 -- bash
 
 # Change nginx to nginx01
