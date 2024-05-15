@@ -24,9 +24,9 @@ A local kubernetes cluster with a single master and multiple worker nodes, provi
   - cpus: `2`
   - ips: `192.168.50.11, 192.168.50.12`
 
-- Network: '192.168.50.0/24'
+- Network: `192.168.50.0/24`
 
-- Pod Cluster Network: '10.88.0.0/16'
+- Pod Cluster Network: `10.88.0.0/16`
 
 ## Versions
 
@@ -54,6 +54,7 @@ To build the whole cluster:
 The Ansible playbooks follow the official Kubernetes documentation for creating a cluster with `kubeadm`.
 - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+
 The hardware requirements for `kubeadm` are set in the `Vagrantfile`.
 
 Containerd and its dependencies are installed from source, because the official Ubuntu repo version is broken.
@@ -118,6 +119,6 @@ sed -i 's/nginx\!/nginx02\!/' /usr/share/nginx/html/index.html
 ```
 
 Now go back to the browser and (hard) reload the page.
-You should see the page switch between "Welcome to nginx01!" and "Welcome to nginx02!".
+You should see the page switch between `Welcome to nginx01!` and `Welcome to nginx02!`.
 
 Hurray! We have a working cluster :)
