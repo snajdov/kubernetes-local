@@ -1,0 +1,148 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Install packages that allow apt to be used over HTTPS
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gpg
+
+  - name: "[containerd] Get version {{ containerd_version }}"
+    get_url:
+      url: https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-{{ os }}-{{ arch }}.tar.gz
+      dest: /home/vagrant/containerd-{{ containerd_version }}-{{ os }}-{{ arch }}.tar.gz
+
+  - name: "[containerd] Extract binares"
+    unarchive:
+      dest: /usr/local
+      src: /home/vagrant/containerd-{{ containerd_version }}-{{ os }}-{{ arch }}.tar.gz
+      remote_src: yes
+
+  - name: "[containerd] Set SystemD service"
+    get_url:
+      url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+      dest: /lib/systemd/system/containerd.service
+
+  - name: "[containerd] Reload SystemD daemons"
+    service:
+      name: containerd
+      daemon_reload: yes
+      state: restarted
+
+  - name: "[runc] Get version {{ runc_version }}"
+    get_url:
+      url: https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.{{ arch }}
+      dest: /home/vagrant/runc.{{ arch }}
+
+  - name: "[runc] Install runc"
+    command: install -m 755 runc.{{ arch }} /usr/local/sbin/runc
+
+  - name: "[cni-plugins] Get version {{ cni_plugins_version }}"
+    get_url:
+      url: https://github.com/containernetworking/plugins/releases/download/v{{ cni_plugins_version }}/cni-plugins-{{ os }}-{{ arch }}-v{{ cni_plugins_version }}.tgz
+      dest: /home/vagrant/cni-plugins-{{ os }}-{{ arch }}-v{{ cni_plugins_version }}.tgz
+
+  - name: "[cni-plugins] Create directory /opt/cni/bin"
+    file:
+      path: /opt/cni/bin
+      state: directory
+
+  - name: "[cni-plugins] Extract binares to /opt/cni/bin"
+    unarchive:
+      dest: /opt/cni/bin
+      src: /home/vagrant/cni-plugins-{{ os }}-{{ arch }}-v{{ cni_plugins_version }}.tgz
+      remote_src: yes
+
+  - name: Ensure /etc/containerd directory exists
+    file:
+      path: /etc/containerd
+      state: directory
+
+  - name: Generate the default containerd config
+    shell: "containerd config default > /etc/containerd/config.toml"
+
+  - name: Ensure SystemdCgroup = true in /etc/containerd/config.toml
+    replace:
+      path: /etc/containerd/config.toml
+      regexp: '(\s*)SystemdCgroup = false'
+      replace: '\1SystemdCgroup = true'
+
+  - name: Restart containerd
+    service:
+      name: containerd
+      daemon_reload: yes
+      state: restarted
+
+  - name: Remove swapfile from /etc/fstab
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    with_items:
+      - swap
+      - none
+
+  - name: Disable swap
+    command: swapoff -a
+    when: ansible_swaptotal_mb > 0
+
+  - name: Add an apt signing key for Kubernetes
+    shell: "curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/deb/Release.key | gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
+
+  - name: Adding apt repository for Kubernetes
+    apt_repository:
+      repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/deb/ /
+      state: present
+      filename: kubernetes.list
+
+  - name: Install Kubernetes binaries
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+        - kubelet 
+        - kubeadm 
+        - kubectl
+
+  - name: Configure node ip
+    lineinfile:
+      path: /etc/default/kubelet
+      line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+      create: yes
+
+  - name: Restart kubelet
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+
+  - name: Set ip_forward to 1
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: 1
+      state: present
+
+  - name: Copy the join command to server location
+    copy: src=../kubernetes-setup/join-command dest=/tmp/join-command.sh mode=0777
+    become: false
+
+  - name: Check if port 10250 is open
+    wait_for:
+      host: your_remote_host
+      port: 10250
+      state: stopped
+    ignore_errors: yes
+    register: already_joined
+
+  - name: Join the node to cluster
+    command: sh /tmp/join-command.sh
+    when: already_joined is failed

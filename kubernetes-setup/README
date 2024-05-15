@@ -1,0 +1,8 @@
+This folder will contain the generated files after you successfully run the Vagrantfile and the Ansible playbooks.
+The generated files are:
+
+1) join-command     # contains the command for the worker nodes to join the cluster
+                    # node-playbook.yaml fetches this from here
+
+2) kube-config      # contains the kubectl configuration file
+                    # put it under ~/.kube/confg if you want to run commands from your host machine
