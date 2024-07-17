@@ -134,7 +134,7 @@ Newer versions set some restrictions on the IP range for host-only networks.
 
 To overcome this, complete the following check list:
 
-- [x] Make sure you have install the latest version of Vagrant and VirtualBox
+- [x] Make sure you have installed the latest version of Vagrant and VirtualBox
 - [x] Make sure you have installed the VirtualBox: host modules for your kernel version, guest iso and guest utils
 - [x] Check if `VBoxManage --version` returns the version without errors
 - [x] Check if your user is in the VirtualBox groups: `groups` should show `vboxsf` and `vboxusers`
