@@ -125,3 +125,23 @@ Now go back to the browser and (hard) reload the page.
 You should see the page switch between `Welcome to nginx01!` and `Welcome to nginx02!`.
 
 Hurray! We have a working cluster :)
+
+
+## Troubleshooting Vagrant and VirtualBox
+
+You may encounter problems with VirtualBox after the installation.
+Newer versions set some restrictions on the IP range for host-only networks.
+
+To overcome this, complete the following check list:
+
+- [x] Make sure you have install the latest version of Vagrant and VirtualBox
+- [x] Make sure you have installed the VirtualBox: host modules for your kernel version, guest iso and guest utils
+- [x] Check if `VBoxManage --version` returns the version without errors
+- [x] Check if your user is in the VirtualBox groups: `groups` should show `vboxsf` and `vboxusers`
+  - To add yourself, run: `sudo usermod -a -G vboxsf <user>` `sudo usermod -a -G vboxusers <user>`
+  - Reboot your machine after this
+- [x] Make sure the `vboxdrv` module is loaded: `sudo modprobe vboxdrv`
+- [x] Make sure the `/etc/vbox` folder is present: `mkdir -p /etc/vbox`
+- [x] Execute the following line to allow more ranges for the host-only network: `printf "* 192.168.0.0/16\n* 10.0.0.0/8" | sudo tee -a /etc/vbox/networks.conf`
+
+
